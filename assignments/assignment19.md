@@ -21,9 +21,8 @@ This is a symmetric-key scheme — same secret unlocks both directions, structur
 
 
 # TODO TODAY:
-**NOW TEST**
 + in polinomial out formula that allows only to encode, (public key concept)
-    1. key(seed) to encode and decode must be difirent
+    + 1. key(seed) to encode and decode must be difirent
         IDEA: encode operatin shoul return encoded bites with decode key,
         that person that shares encoded content will give to decoder
 
@@ -33,9 +32,15 @@ This is a symmetric-key scheme — same secret unlocks both directions, structur
 
         NOTE:(d is computed from e via a formula (extended Euclidean algorithm))
 
-    2. add  seperate functions, try not to change algo_classes
-    3. add option to choose algo and toggle option to encode with key inside the desctop app
-         
+   + 2. add  seperate functions, try not to change algo_classes
+   + 3. add option to choose algo and toggle option to encode with key inside the desctop app
+
+- DesctopApp change
+   **1.** Add option to save public_key to file in DesctopApp
+   **2.** Add option to chose algorithm vesion
+ 
+
+
 
 ## PLAN FOR NOW:
  rather than patching F8_MULT_BASED: with y = x^e, decode literally only needs one number (d), not a whole reconstructed d_mod_range sequence that has to line up element-by-element with what encode used. Two options from here:
