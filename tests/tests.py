@@ -28,6 +28,7 @@ from cryptall_2.core.sudo512_modulo import SUDO512_MOD
 from cryptall_2.core.finite_field import F8
 from cryptall_2.core.ring import RING
 
+
 from cryptall_2.encode_decode import (
     encode_bites,
     decode_bites,

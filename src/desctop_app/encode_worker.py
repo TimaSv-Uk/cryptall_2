@@ -1,8 +1,11 @@
-from cryptall_2.encode_decode import encode_file, decode_file
+from cryptall_2.encode_decode_file import encode_file
 
 from PySide6 import QtCore
 
 class EncodeWorker(QtCore.QThread):
+
+
+    # NOTE: dont touch this class rewrite encode_file/decode_file, function  insted and change input arguments here as well as form class add noie ratio param(or don't for now and set it to 0 by default)
     finished = QtCore.Signal(bool, str)
 
     def __init__(self, file_path: str, save_path: str, seed: int, tr):

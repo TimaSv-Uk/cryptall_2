@@ -1,4 +1,4 @@
-from cryptall_2.encode_decode import encode_file, decode_file
+from cryptall_2.encode_decode_file import  decode_file
 
 from PySide6 import QtCore
 

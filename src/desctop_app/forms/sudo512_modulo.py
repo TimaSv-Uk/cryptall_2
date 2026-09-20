@@ -20,5 +20,5 @@ class FormSudo512Modulo(FormOriginal):
          noise_ratio: float = 0.00,
      ) -> np.ndarray:
     """
-    def __init__(self, tr):
+    def __init__(self):
         super().__init__()

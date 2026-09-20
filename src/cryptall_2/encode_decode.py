@@ -348,45 +348,6 @@ def decode_bites_full(
     )
 
 
-# NOTE: old needs to be removed, and replaces in app to chose option of an algorithm
-def encode_file(
-    file_path: str,
-    save_encoded_file_path: str,
-    seed: int = 42,
-):
-    char_ecncode_mod = 256
-    d_mod = 128
-
-    file_bites = load_file_to_bites(file_path)
-
-    encoded_bites = encode_bites(file_bites, char_ecncode_mod, d_mod, seed)
-
-    save_file_from_bites(save_encoded_file_path, encoded_bites)
-
-
-def decode_file(
-    encoded_file_path: str,
-    save_decoded_file_path: str,
-    seed: int = 42,
-):
-    char_ecncode_mod = 256
-    d_mod = 128
-    file_bites = load_file_to_bites(encoded_file_path)
-
-    decoded_bites = decode_bites(file_bites, char_ecncode_mod, d_mod, seed)
-
-    save_file_from_bites(save_decoded_file_path, decoded_bites)
-
-    number_of_digests = 4
-
-    file_path = "tests/test_results/encoded/img_encoded.jpg"
-    save_file_path = "tests/digests/img_encoded/"
-
-    save_file_digests(number_of_digests, file_path, save_file_path)
-
-    print(f"{number_of_digests} digests of {file_path}; Saved at {save_file_path}")
-
-
 if __name__ == "__main__":
     image_name = "img.jpg"
     # "C:\Users\Timofii\code\python\cryptall_2\tests\test_results\encoded\img_encoded.jpg"
