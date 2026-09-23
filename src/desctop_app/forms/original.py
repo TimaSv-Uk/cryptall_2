@@ -3,15 +3,20 @@ from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QVBoxLayout, QGroupBox
 from PySide6.QtGui import QAction, QIntValidator, QFont, QTextCursor
 
 from pathlib import Path
+
+from cryptall_2.encode_decode_file import AlgorithmType
+
 from ..constants import DEFAULT_SEED
 from ..decode_worker import DecodeWorker
 from ..encode_worker import EncodeWorker
+
 
 class FormOriginal(QtWidgets.QWidget):
     def __init__(self, lang_text):
         super().__init__()
         self.lang_text = lang_text
 
+        self.algorithm_type = AlgorithmType.V5
         layout = QtWidgets.QVBoxLayout(self)
         layout.setSpacing(20)
         layout.setContentsMargins(30, 30, 30, 30)
@@ -24,7 +29,9 @@ class FormOriginal(QtWidgets.QWidget):
         layout.addWidget(self.title)
 
         # File Selection Group
-        self.file_group = QGroupBox(self.lang_text.get("main_page.file_selection.group_title"))
+        self.file_group = QGroupBox(
+            self.lang_text.get("main_page.file_selection.group_title")
+        )
         file_layout = QVBoxLayout(self.file_group)
 
         self.file_button = QtWidgets.QPushButton(
@@ -48,12 +55,16 @@ class FormOriginal(QtWidgets.QWidget):
         file_layout.addWidget(self.file_label)
 
         # Number Input Group
-        self.seed_group = QGroupBox(self.lang_text.get("main_page.configuration.group_title"))
+        self.seed_group = QGroupBox(
+            self.lang_text.get("main_page.configuration.group_title")
+        )
         seed_layout = QVBoxLayout(self.seed_group)
 
         self.seed_input = QtWidgets.QLineEdit()
         self.seed_input.setPlaceholderText(
-            self.lang_text.get("main_page.configuration.placeholder", default=DEFAULT_SEED)
+            self.lang_text.get(
+                "main_page.configuration.placeholder", default=DEFAULT_SEED
+            )
         )
         self.seed_input.setValidator(QIntValidator())
         seed_layout.addWidget(self.seed_input)
@@ -70,8 +81,12 @@ class FormOriginal(QtWidgets.QWidget):
             lambda text: self.save_label.setText(text)
         )
 
-        self.save_button = QtWidgets.QPushButton(self.lang_text.get("main_page.output.button"))
-        self.save_label = QtWidgets.QLabel(self.lang_text.get("main_page.output.no_path"))
+        self.save_button = QtWidgets.QPushButton(
+            self.lang_text.get("main_page.output.button")
+        )
+        self.save_label = QtWidgets.QLabel(
+            self.lang_text.get("main_page.output.no_path")
+        )
         self.save_label.setWordWrap(True)
         self.save_button.clicked.connect(self.open_save_dialog)
 
@@ -80,7 +95,9 @@ class FormOriginal(QtWidgets.QWidget):
         save_layout.addWidget(self.save_label)
 
         # Action Buttons Group
-        self.action_group = QGroupBox(self.lang_text.get("main_page.actions.group_title"))
+        self.action_group = QGroupBox(
+            self.lang_text.get("main_page.actions.group_title")
+        )
         action_layout = QHBoxLayout(self.action_group)
 
         self.encode_button = QtWidgets.QPushButton(
@@ -108,7 +125,9 @@ class FormOriginal(QtWidgets.QWidget):
         self.status_text.setReadOnly(True)
         self.status_text.setMinimumHeight(100)
         self.status_text.setMaximumHeight(200)
-        self.status_text.setPlaceholderText(self.lang_text.get("main_page.status.placeholder"))
+        self.status_text.setPlaceholderText(
+            self.lang_text.get("main_page.status.placeholder")
+        )
 
         # Add all groups to main layout
         layout.addWidget(self.file_group)
@@ -167,7 +186,9 @@ class FormOriginal(QtWidgets.QWidget):
         self.save_lineedit.setText(file_path)
 
         self.update_status(
-            self.lang_text.get("main_page.status.swap", path1=save_path, path2=file_path)
+            self.lang_text.get(
+                "main_page.status.swap", path1=save_path, path2=file_path
+            )
         )
 
     def update_status(self, message):
@@ -232,23 +253,35 @@ class FormOriginal(QtWidgets.QWidget):
             self.loader = QtWidgets.QProgressDialog(
                 self.lang_text.get("main_page.dialogs.encoding"), None, 0, 0, self
             )
-            self.loader.setWindowTitle(self.lang_text.get("main_page.dialogs.please_wait"))
+            self.loader.setWindowTitle(
+                self.lang_text.get("main_page.dialogs.please_wait")
+            )
             self.loader.setWindowModality(QtCore.Qt.WindowModal)
             self.loader.setCancelButton(None)
             self.loader.show()
 
-            self.worker = EncodeWorker(file_path, save_path, seed, self.lang_text)
+            self.worker = EncodeWorker(
+                file_path, save_path, seed, self.lang_text, self.algorithm_type
+            )
             self.worker.finished.connect(self.on_done)
             self.worker.start()
 
             self.update_status(self.lang_text.get("main_page.status.encoded"))
-            self.update_status(self.lang_text.get("main_page.status.input", path=file_path))
-            self.update_status(self.lang_text.get("main_page.status.output", path=save_path))
+            self.update_status(
+                self.lang_text.get("main_page.status.input", path=file_path)
+            )
+            self.update_status(
+                self.lang_text.get("main_page.status.output", path=save_path)
+            )
             if seed != DEFAULT_SEED:
-                self.update_status(self.lang_text.get("main_page.status.number", number=seed))
+                self.update_status(
+                    self.lang_text.get("main_page.status.number", number=seed)
+                )
 
         except Exception as e:
-            self.update_status(self.lang_text.get("main_page.status.error", error=str(e)))
+            self.update_status(
+                self.lang_text.get("main_page.status.error", error=str(e))
+            )
 
     def decode_file_action(self):
         file_path, save_path, number = self.validate_inputs()
@@ -259,25 +292,35 @@ class FormOriginal(QtWidgets.QWidget):
             self.loader = QtWidgets.QProgressDialog(
                 self.lang_text.get("main_page.dialogs.decoding"), None, 0, 0, self
             )
-            self.loader.setWindowTitle(self.lang_text.get("main_page.dialogs.please_wait"))
+            self.loader.setWindowTitle(
+                self.lang_text.get("main_page.dialogs.please_wait")
+            )
             self.loader.setWindowModality(QtCore.Qt.WindowModal)
             self.loader.setCancelButton(None)
             self.loader.show()
 
-            self.worker = DecodeWorker(file_path, save_path, number, self.lang_text)
+            self.worker = DecodeWorker(
+                file_path, save_path, number, self.lang_text, self.algorithm_type
+            )
             self.worker.finished.connect(self.on_done)
             self.worker.start()
 
             self.update_status(self.lang_text.get("main_page.status.decoded"))
-            self.update_status(self.lang_text.get("main_page.status.input", path=file_path))
-            self.update_status(self.lang_text.get("main_page.status.output", path=save_path))
+            self.update_status(
+                self.lang_text.get("main_page.status.input", path=file_path)
+            )
+            self.update_status(
+                self.lang_text.get("main_page.status.output", path=save_path)
+            )
             if number != DEFAULT_SEED:
                 self.update_status(
                     self.lang_text.get("main_page.status.number", number=number)
                 )
 
         except Exception as e:
-            self.update_status(self.lang_text.get("main_page.status.error", error=str(e)))
+            self.update_status(
+                self.lang_text.get("main_page.status.error", error=str(e))
+            )
 
     def on_done(self, success, message):
         self.loader.close()
@@ -292,15 +335,23 @@ class FormOriginal(QtWidgets.QWidget):
 
     def refresh_ui(self):
         self.title.setText(self.lang_text.get("main_page.title"))
-        self.file_group.setTitle(self.lang_text.get("main_page.file_selection.group_title"))
-        self.seed_group.setTitle(self.lang_text.get("main_page.configuration.group_title"))
+        self.file_group.setTitle(
+            self.lang_text.get("main_page.file_selection.group_title")
+        )
+        self.seed_group.setTitle(
+            self.lang_text.get("main_page.configuration.group_title")
+        )
         self.save_group.setTitle(self.lang_text.get("main_page.output.group_title"))
         self.action_group.setTitle(self.lang_text.get("main_page.actions.group_title"))
 
         self.file_button.setText(self.lang_text.get("main_page.file_selection.button"))
         self.save_button.setText(self.lang_text.get("main_page.output.button"))
-        self.encode_button.setText(self.lang_text.get("main_page.actions.encode_button"))
-        self.decode_button.setText(self.lang_text.get("main_page.actions.decode_button"))
+        self.encode_button.setText(
+            self.lang_text.get("main_page.actions.encode_button")
+        )
+        self.decode_button.setText(
+            self.lang_text.get("main_page.actions.decode_button")
+        )
         self.swap_encode_decode_file_button.setText(
             self.lang_text.get("main_page.actions.swap_button")
         )
@@ -309,14 +360,20 @@ class FormOriginal(QtWidgets.QWidget):
             self.lang_text.get("main_page.file_selection.placeholder")
         )
         self.seed_input.setPlaceholderText(
-            self.lang_text.get("main_page.configuration.placeholder", default=DEFAULT_SEED)
+            self.lang_text.get(
+                "main_page.configuration.placeholder", default=DEFAULT_SEED
+            )
         )
         self.save_lineedit.setPlaceholderText(
             self.lang_text.get("main_page.output.placeholder")
         )
-        self.status_text.setPlaceholderText(self.lang_text.get("main_page.status.placeholder"))
+        self.status_text.setPlaceholderText(
+            self.lang_text.get("main_page.status.placeholder")
+        )
 
         if not self.file_lineedit.text():
-            self.file_label.setText(self.lang_text.get("main_page.file_selection.no_file"))
+            self.file_label.setText(
+                self.lang_text.get("main_page.file_selection.no_file")
+            )
         if not self.save_lineedit.text():
             self.save_label.setText(self.lang_text.get("main_page.output.no_path"))

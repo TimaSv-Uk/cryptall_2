@@ -1,3 +1,5 @@
+from cryptall_2.encode_decode_file import AlgorithmType
+
 from .original import FormOriginal
 
 class FormSudo512Modulo(FormOriginal): 
@@ -22,3 +24,5 @@ class FormSudo512Modulo(FormOriginal):
     """
     def __init__(self):
         super().__init__()
+        self.algorithm_type = AlgorithmType.SUDO512_MOD
+
