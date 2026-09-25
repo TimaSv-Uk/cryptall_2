@@ -6,17 +6,27 @@ from pathlib import Path
 
 from cryptall_2.encode_decode_file import AlgorithmType
 
+
 from ..constants import DEFAULT_SEED
 from ..decode_worker import DecodeWorker
 from ..encode_worker import EncodeWorker
+from ..languages.ui_language_manager import UILanguageManager
+
 
 
 class FormOriginal(QtWidgets.QWidget):
-    def __init__(self, lang_text):
+    def set_algoirithm_title(self) -> None:  
+        json_path = "main_page.algorithm_title.default"
+        self.algorithm_title = self.lang_text.get(json_path)
+        if hasattr(self, 'subtitle'):
+            self.subtitle.setText(self.algorithm_title)
+
+    def __init__(self, lang_text:UILanguageManager):
         super().__init__()
         self.lang_text = lang_text
-
         self.algorithm_type = AlgorithmType.V5
+        self.set_algoirithm_title()
+
         layout = QtWidgets.QVBoxLayout(self)
         layout.setSpacing(20)
         layout.setContentsMargins(30, 30, 30, 30)
@@ -27,7 +37,12 @@ class FormOriginal(QtWidgets.QWidget):
         )
         self.title.setObjectName("titleLabel")
         layout.addWidget(self.title)
-
+        # Subtitle / Algorithm Title (Placed right under main title)
+        self.subtitle = QtWidgets.QLabel(
+            self.algorithm_title, alignment=QtCore.Qt.AlignCenter
+        )
+        self.subtitle.setObjectName("algorithmTitleLabel")
+        layout.addWidget(self.subtitle)
         # File Selection Group
         self.file_group = QGroupBox(
             self.lang_text.get("main_page.file_selection.group_title")
@@ -334,6 +349,9 @@ class FormOriginal(QtWidgets.QWidget):
             )
 
     def refresh_ui(self):
+
+        self.set_algoirithm_title()
+
         self.title.setText(self.lang_text.get("main_page.title"))
         self.file_group.setTitle(
             self.lang_text.get("main_page.file_selection.group_title")

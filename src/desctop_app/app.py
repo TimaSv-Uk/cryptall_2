@@ -13,8 +13,9 @@ from .languages.ui_language_manager import UILanguageManager
 
 from .constants import DEFAULT_SEED
 
+
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, tr, lang_dir):
+    def __init__(self, tr: UILanguageManager, lang_dir: str):
         super().__init__()
         self.tr = tr
         self.lang_dir = Path(lang_dir)
@@ -26,12 +27,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.page_width = int(screen_width * 0.70)
 
-        self.main_page = FormOriginal(tr)
+        self.form_original = FormOriginal(tr)
+        self.form_sudo = FormSudo512Modulo(tr)
+
+        self.algorithm_stack = QtWidgets.QStackedWidget()
+        self.algorithm_stack.addWidget(self.form_original)  # Index 0
+        self.algorithm_stack.addWidget(self.form_sudo)  # Index 1
+
+        self.page_one = PageOne(tr)
+        self.page_two = PageTwo(tr)
         self.page_one = PageOne(tr)
         self.page_two = PageTwo(tr)
 
         self.stacked_widget = QtWidgets.QStackedWidget()
-        self.stacked_widget.addWidget(self.main_page)
+        self.stacked_widget.addWidget(self.algorithm_stack)
         self.stacked_widget.addWidget(self.page_one)
         self.stacked_widget.addWidget(self.page_two)
         self.stacked_widget.setMaximumSize(self.page_width, 1100)
@@ -60,6 +69,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(central_container)
 
         menu_bar = self.menuBar()
+
+        self.algo_menu = menu_bar.addMenu(
+            self.tr.get("menu.algorithms", default="Algorithms")
+        )
+
+        self.action_original = QAction("Original", self)
+        self.action_sudo = QAction("Sudo 512 Modulo", self)
+
+        self.algo_menu.addAction(self.action_original)
+        self.algo_menu.addAction(self.action_sudo)
+
+        # When an algorithm is selected, change the nested stack AND ensure we are on the main page view
+        self.action_original.triggered.connect(self.show_original_algorithm)
+        self.action_sudo.triggered.connect(self.show_sudo_algorithm)
+
         self.navigate_menu = menu_bar.addMenu(self.tr.get("menu.menu"))
 
         self.main_action = QAction(self.tr.get("menu.main_page"), self)
@@ -137,11 +161,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.main_action.setText(self.tr.get("menu.main_page"))
         self.docs_action.setText(self.tr.get("menu.documentation"))
         self.about_action.setText(self.tr.get("menu.about"))
+
+
+        self.algo_menu.setTitle(self.tr.get("menu.algorithms", default="Algorithms"))
+        self.action_original.setText(self.tr.get("algo.original", default="Original"))
+        self.action_sudo.setText(self.tr.get("algo.sudo", default="Sudo 512 Modulo"))
+
         self.language_menu.setTitle(self.tr.get("language_menu"))
 
-        self.main_page.refresh_ui()
+        self.form_original.refresh_ui()
+        self.form_sudo.refresh_ui()
+
         self.page_one.refresh_ui()
         self.page_two.refresh_ui()
+
+    def show_original_algorithm(self):
+        self.algorithm_stack.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(
+            0
+        )  # Forces view back to main page if user was in Docs/About
+
+    def show_sudo_algorithm(self):
+        self.algorithm_stack.setCurrentIndex(1)
+        self.stacked_widget.setCurrentIndex(
+            0
+        )  # Forces view back to main page if user was in Docs/About
 
     def apply_styles(self):
         self.setStyleSheet("""
@@ -165,6 +209,13 @@ class MainWindow(QtWidgets.QMainWindow):
             #titleLabel {
                 font-size: 42px;
                 font-weight: bold;
+            }
+            #algorithmTitleLabel {
+                font-size: 16px; 
+                font-weight: normal;
+                color: #555555;
+                padding-top: 0px;
+                margin-top: 0px; /* Pulls it slightly closer to the main title */
             }
             QGroupBox {
                 font-weight: bold;

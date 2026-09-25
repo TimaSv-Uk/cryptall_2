@@ -3,6 +3,10 @@
   "language_menu": "Мова",
   "main_page": {
     "title": "Кодування/Декодування файлів",
+    "algorithm_title": {
+      "form_sudo512modulo": "Алгоритм  Sudo512Modulo",
+      "default": "Алгоритм за замовчуванням"
+    },
     "file_selection": {
       "group_title": "Вибір файлу",
       "button": "Обрати файл",
@@ -69,6 +73,12 @@
     "menu": "Меню",
     "main_page": "Головна сторінка",
     "documentation": "Документація",
-    "about": "Про програму"
+    "about": "Про програму",
+    "algorithms": "Алгоритми"
+  },
+
+  "algo": {
+    "original": "Оригінал",
+    "sudo": "Sudo 512 Modulo"
   }
 }

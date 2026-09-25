@@ -3,6 +3,10 @@
   "language_menu": "Language",
   "main_page": {
     "title": "File Encoder/Decoder",
+    "algorithm_title": {
+      "form_sudo512modulo": "Algorithm Sudo512Modulo",
+      "default": "Default algorithm"
+    },
     "file_selection": {
       "group_title": "File Selection",
       "button": "Select File",
@@ -69,6 +73,11 @@
     "menu": "Menu",
     "main_page": "Main Page",
     "documentation": "Documentation",
-    "about": "About"
-  }
+    "about": "About",
+    "algorithms": "Algorithms"
+  },
+    "algo": {
+      "original": "Original",
+      "sudo": "Sudo 512 Modulo"
+    }
 }
