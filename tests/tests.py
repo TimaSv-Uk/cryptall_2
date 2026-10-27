@@ -1,3 +1,9 @@
+from cryptall_2.encode_decode_key import (
+    decode_bites_f8_mult_based_publickey_transformed,
+)
+from cryptall_2.encode_decode_key import (
+    encode_bites_f8_mult_based_publickey_transformed,
+)
 from pathlib import Path
 import unittest
 import random
@@ -483,9 +489,7 @@ class TestPublicKey(unittest.TestCase):
         encoded, public_key = encode_bites_f8_mult_based_publickey(
             file_bites, self.d_mod, self.encode_key
         )
-        decoded = decode_bites_f8_mult_based_publickey(
-            encoded, public_key 
-        )
+        decoded = decode_bites_f8_mult_based_publickey(encoded, public_key)
         self.assertTrue(np.array_equal(file_bites, decoded))
 
     def test_encode_decode_consistency_MODIFIFIED_KEY(self):
@@ -498,10 +502,19 @@ class TestPublicKey(unittest.TestCase):
         )
         if public_key[0] != 0:
             public_key[0] = 0
-        decoded = decode_bites_f8_mult_based_publickey(
-            encoded, public_key 
-        )
+        decoded = decode_bites_f8_mult_based_publickey(encoded, public_key)
         self.assertFalse(np.array_equal(file_bites, decoded))
+
+    def test_encode_decode_consistency_linear_transform_key(self):
+        """Test that encoding followed by decoding restores the original bites."""
+        file_bites = load_file_to_bites(
+            f"{self.test_file_dir}/{self.file_names['txt']}"
+        )
+        encoded, public_key = encode_bites_f8_mult_based_publickey_transformed(
+            file_bites, self.d_mod, self.encode_key
+        )
+        decoded = decode_bites_f8_mult_based_publickey_transformed(encoded, public_key)
+        self.assertTrue(np.array_equal(file_bites, decoded))
 
 
 # NOTE: HELPER / MATH TESTS (Completely separated from encoding tests)
